@@ -1,0 +1,52 @@
+Modles
+data/logic
+
+handler
+brain// decides how data is processed
+
+view
+ui// shows player shit
+
+What do we need to make the game?
+Give the player a prompt
+take an input from the player
+show the player the results of actions
+
+class view
+{
+    prompt = "" # this os the string of text we prompt the player with
+    responses = [] # this is where we store our response objects
+
+}
+
+class handler
+{
+    execute = [] (input, views) {
+    } # this is a variable that stores a mutable function. we can define different functions for each handler
+    #retruns a view
+    }
+}
+
+loop
+{
+show view(current view)
+input = get input()
+currenthandler = gethandler(input, views, handlers)
+currentview = currenthandler.execute(views, modles)
+}
+
+hop scotch
+jump on the following squares
+0 0 7 0 0
+0 5 0 6 0
+0 0 4 0 0
+0 0 3 2 0
+0 0 1 0 0
+
+garden
+simon says
+red
+red, blue
+red, blue, purple
+red, blue, purple, green
+red, blue, purple, green, blue
