@@ -4,12 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1f706436-a38e-4d95-88b7-7097d40f7fbd" name="Changes" comment="Built the character class framework, built the map, and started the main game loop.">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/character.py" beforeDir="false" afterPath="$PROJECT_DIR$/character.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/map.py" beforeDir="false" afterPath="$PROJECT_DIR$/map.py" afterDir="false" />
-    </list>
+    <list default="true" id="1f706436-a38e-4d95-88b7-7097d40f7fbd" name="Changes" comment="Forgot to move beast character to main.py&#10;All characters in main now and only referenced in other modules. &#10;Should be good for main loop to create characters and reference them from the dictionaries." />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -28,6 +23,7 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="PUSH_AUTO_UPDATE" value="true" />
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectColorInfo">{
@@ -94,7 +90,31 @@
       <option name="project" value="LOCAL" />
       <updated>1787704349068</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Refined the character class and killed the immortal goblins.&#10;Added the item dictionary for required items. &#10;Cleaned up modules and fixed circular imports.&#10;Things to do: Add find item method or function, possibly in main loop. Lantern needs to unlock Mom. Still need pygame to work. Make a game class to define the game actions instead of functions in main.py?">
+      <option name="closed" value="true" />
+      <created>1788107308793</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1788107308793</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Refined the character class and killed the immortal goblins.&#10;Added the item dictionary for required items. &#10;Cleaned up modules and fixed circular imports.&#10;Things to do: Add find item method or function, possibly in main loop. Lantern needs to unlock Mom. Still need pygame to work. Make a game class to define the game actions instead of functions in main.py?">
+      <option name="closed" value="true" />
+      <created>1788107403554</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1788107403554</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Forgot to move beast character to main.py&#10;All characters in main now and only referenced in other modules. &#10;Should be good for main loop to create characters and reference them from the dictionaries.">
+      <option name="closed" value="true" />
+      <created>1788107592542</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1788107592542</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -110,6 +130,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Built the character class framework, built the map, and started the main game loop." />
-    <option name="LAST_COMMIT_MESSAGE" value="Built the character class framework, built the map, and started the main game loop." />
+    <MESSAGE value="Refined the character class and killed the immortal goblins.&#10;Added the item dictionary for required items. &#10;Cleaned up modules and fixed circular imports.&#10;Things to do: Add find item method or function, possibly in main loop. Lantern needs to unlock Mom. Still need pygame to work. Make a game class to define the game actions instead of functions in main.py?" />
+    <MESSAGE value="Forgot to move beast character to main.py&#10;All characters in main now and only referenced in other modules. &#10;Should be good for main loop to create characters and reference them from the dictionaries." />
+    <option name="LAST_COMMIT_MESSAGE" value="Forgot to move beast character to main.py&#10;All characters in main now and only referenced in other modules. &#10;Should be good for main loop to create characters and reference them from the dictionaries." />
   </component>
 </project>
