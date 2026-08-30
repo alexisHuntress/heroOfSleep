@@ -1,15 +1,17 @@
 # Imports
 from character import Character
+from items import items
 import map
 import pygame
 import utils
 import sys
 
+player = Character(True, "You", 15, 11, (2, 6), [], True)
+nightmare = Character(False, "Nightmare", 50, 15, (1, 12), [], True)
+goblin = Character(False, "The Goblin", 20, 10, (2, 10), [], True)
 
-player = Character(True, "You", 15, 11, (2, 6), None)
 
-
-def try_moving(current_room, rooms, direction, player):
+def try_moving(current_room, rooms, direction):
     room = rooms[current_room]
 
     # Check if that direction exists
@@ -26,6 +28,9 @@ def try_moving(current_room, rooms, direction, player):
     description = rooms[current_room]["description"]
 
     return current_room, description
+
+
+test = Character(True, "test", 5, 5, (0, 0), [items["socks"], items["tunic"]], True)
 
 
 def game_loop():
@@ -58,8 +63,7 @@ def game_loop():
             current_room, description = try_moving(
                 current_room,
                 map.rooms,
-                command,
-                player
+                command
             )
 
             print(description)
@@ -93,7 +97,6 @@ while running:
 
 pygame.quit()
 """
-
 
 if __name__ == "__main__":
     game_loop()

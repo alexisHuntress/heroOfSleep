@@ -1,8 +1,5 @@
 # Imports
-from character import Character
 
-nightmare = Character(False, "Nightmare", 50, 15, (1, 12), None)
-goblin = Character(False, "The Goblin", 20, 10, (2, 10), None)
 
 def garden_puzzle():
     colors = ["red", "yellow", "blue", "green", "orange", "purple"]
@@ -15,7 +12,10 @@ def garden_puzzle():
         "blue"
     ]
 
-    print("Six colored flowers begin to glow.\nRed, Yellow, Blue, Green, Orange, and Purple.\nIt looks like they're trying to show you a pattern...")
+    print(
+        "Six colored flowers begin to glow.\n"
+        "Red, Yellow, Blue, Green, Orange, and Purple.\n"
+        "It looks like they're trying to show you a pattern...")
 
     for round_number in range(1, len(sequence) + 1):
         correct_sequence = sequence[:round_number]
@@ -66,9 +66,17 @@ def hop_scotch_puzzle():
     print("You completed the hopscotch path. The door unlocks.")
     return True
 
+
 """
 Map
-Key = {"I" : "Item room", "R" : " Empty room" "P" : "puzzle room", "B" : "boss room", "E" : "enemy room", "H" : "hidden room"}
+Key = {
+        "I" : "Item room",
+        "R" : "Empty room"
+        "P" : "Puzzle room",
+        "B" : "Boss room",
+        "E" : "Enemy room",
+        "H" : "Hidden room"
+       }
 
                     I00
     B00             E00
@@ -89,84 +97,84 @@ Room
  └── solved state
 """
 rooms = {
-    "Entrance" : { #E01
-            "description" : "You woke up in this room. It feels oddly familiar.",
-            "exits" : {"north": "Hallway"},
-            "item" : [],
-            "enemy" : None,
-            "locked exits" : {},
-            "puzzle" : None,
-            "solved" : True
+    "Entrance": {  # E01
+        "description": "You woke up in this room. It feels oddly familiar.",
+        "exits": {"north": "Hallway"},
+        "item": [],
+        "enemy": None,
+        "locked exits": {},
+        "puzzle": None,
+        "solved": True
     },
 
-    "Mom's Room" : { #H00
-            "description" : "Wait!\n This is Mom's room!\n Now the Nightmare can't bother you. \n Sweet Dreams Hero.",
-            "exits" :{"east" :"Entrance"},
-            "item": [],
-            "enemy": None,
-            "locked exits": {},
-            "puzzle": None,
-            "solved": True
+    "Mom's Room": {  # H00
+        "description": "Wait!\n This is Mom's room!\n Now the Nightmare can't bother you. \n Sweet Dreams Hero.",
+        "exits": {"east": "Entrance"},
+        "item": [],
+        "enemy": None,
+        "locked exits": {},
+        "puzzle": None,
+        "solved": True
     },
 
-    "Hallway" : { #I07
-            "description" : "A dark hallway with two rooms.",
-            "exits" : {"west" : "Item Room 6", "east" : "Hop Scotch Room"},
-            "item": [],
-            "enemy": None,
-            "locked exits": {},
-            "puzzle": None,
-            "solved": True
+    "Hallway": {  # I07
+        "description": "A dark hallway with two rooms.",
+        "exits": {"west": "Item Room 6", "east": "Hop Scotch Room"},
+        "item": [],
+        "enemy": None,
+        "locked exits": {},
+        "puzzle": None,
+        "solved": True
     },
 
-    "Item Room 6" : { #I06
-            "description" : "Oh look a chest!",
-            "exits" : {"east" : "Hallway"},
-            "item": [],
-            "enemy": None,
-            "locked exits": {},
-            "puzzle": None,
-            "solved": True
+    "Item Room 6": {  # I06
+        "description": "Oh look a chest!",
+        "exits": {"east": "Hallway"},
+        "item": [],
+        "enemy": None,
+        "locked exits": {},
+        "puzzle": None,
+        "solved": True
     },
 
-    "Hop Scotch Room" : { #P00
-            "description" : "Look Hopscotch!",
-            "exits" : {"west" : "Hallway", "south" : "Room with stairs up"},
-            "item": [],
-            "enemy": None,
-            "locked exits": {"south"},
-            "puzzle": hop_scotch_puzzle,
-            "solved": False
+    "Hop Scotch Room": {  # P00
+        "description": "Look Hopscotch!",
+        "exits": {"west": "Hallway", "south": "Room with stairs up"},
+        "item": [],
+        "enemy": None,
+        "locked exits": {"south"},
+        "puzzle": hop_scotch_puzzle,
+        "solved": False
     },
 
-    "Room with stairs up" : { #R06
-            "description" : "Where do those stairs lead?.",
-            "exits" : {"up" : "Room with stairs down", "north" : "Hop Scotch Room"},
-            "item": [],
-            "enemy": None,
-            "locked exits": {},
-            "puzzle": None,
-            "solved": True
+    "Room with stairs up": {  # R06
+        "description": "Where do those stairs lead?.",
+        "exits": {"up": "Room with stairs down", "north": "Hop Scotch Room"},
+        "item": [],
+        "enemy": None,
+        "locked exits": {},
+        "puzzle": None,
+        "solved": True
     },
 
-    "Room with stairs down" : { #I03
-            "description" : "What are those?.",
-            "exits" : {"down" : "Room with stairs up", "west" : "Empty Room", "north" : "Monster Room"},
-            "item": [],
-            "enemy": None,
-            "locked exits": {},
-            "puzzle": None,
-            "solved": True
+    "Room with stairs down": {  # I03
+        "description": "What are those?.",
+        "exits": {"down": "Room with stairs up", "west": "Empty Room", "north": "Monster Room"},
+        "item": [],
+        "enemy": None,
+        "locked exits": {},
+        "puzzle": None,
+        "solved": True
     },
 
-    "Monster Room" : { #E00
-            "description" : "AHH!\n A monster!.",
-            "exits" : {"north" : "Treasure Room", "south" : "Room with stairs down"},
-            "item": [],
-            "enemy": goblin,
-            "locked exits": {"north", "south"},
-            "puzzle": None,
-            "solved": True
+    "Monster Room": {  # E00
+        "description": "AHH!\n A monster!.",
+        "exits": {"north": "Treasure Room", "south": "Room with stairs down"},
+        "item": [],
+        "enemy": "goblin",
+        "locked exits": {"north", "south"},
+        "puzzle": None,
+        "solved": True
     },
 
     "Treasure Room": {  # I00
@@ -181,7 +189,7 @@ rooms = {
 
     "Empty Room": {  # R01
         "description": "This room is a little chilly.",
-        "exits": {"east" : "Room with stairs down", "south": "Item Room 5"},
+        "exits": {"east": "Room with stairs down", "south": "Item Room 5"},
         "item": [],
         "enemy": None,
         "locked exits": {},
@@ -191,7 +199,7 @@ rooms = {
 
     "Item Room 5": {  # I05
         "description": "Oh! A thing.",
-        "exits": {"west" : "Long Hall", "north": "Empty Room"},
+        "exits": {"west": "Long Hall", "north": "Empty Room"},
         "item": [],
         "enemy": None,
         "locked exits": {},
@@ -201,7 +209,7 @@ rooms = {
 
     "Long Hall": {  # R03
         "description": "This hall goes forever!",
-        "exits": {"west" : "Garden", "east": "Item Room 5"},
+        "exits": {"west": "Garden", "east": "Item Room 5"},
         "item": [],
         "enemy": None,
         "locked exits": {},
@@ -211,7 +219,7 @@ rooms = {
 
     "Garden": {  # R02
         "description": "Wow, a candy garden!",
-        "exits": {"west" : "Item room 4", "north": "Item room 2", "east": "Long Hall"},
+        "exits": {"west": "Item room 4", "north": "Item room 2", "east": "Long Hall"},
         "item": [],
         "enemy": None,
         "locked exits": {"east"},
@@ -221,7 +229,7 @@ rooms = {
 
     "Item room 4": {  # I04
         "description": "Another Chest!\n I wonder what it holds.",
-        "exits": {"east" : "Garden"},
+        "exits": {"east": "Garden"},
         "item": [],
         "enemy": None,
         "locked exits": {},
@@ -230,8 +238,8 @@ rooms = {
     },
 
     "Item room 2": {  # I02
-        "description": "Oh look Something.", #needs item inputed
-        "exits": {"south" : "Garden", "west" : "Cross Road"},
+        "description": "Oh look Something.",  # needs item inputed
+        "exits": {"south": "Garden", "west": "Cross Road"},
         "item": [],
         "enemy": None,
         "locked exits": {},
@@ -240,8 +248,8 @@ rooms = {
     },
 
     "Cross Road": {  # R00
-        "description": "Oh look Something.",  # needs item inputed
-        "exits": {"east" : "Item room 2", "west" : "Item room 1", "north" : "Nightmare's Room"},
+        "description": "Oh look Something.",  # needs item inputted
+        "exits": {"east": "Item room 2", "west": "Item room 1", "north": "Nightmare's Room"},
         "item": [],
         "enemy": None,
         "locked exits": {},
@@ -260,10 +268,10 @@ rooms = {
     },
 
     "Nightmare's Room": {  # B00
-        "description": "Oh look Something.",  # needs item inputed
+        "description": "Oh look Something.",  # needs item inputted
         "exits": {"south": "Cross Road"},
         "item": [],
-        "enemy": nightmare,
+        "enemy": "nightmare",
         "locked exits": {"south"},
         "puzzle": None,
         "solved": True
