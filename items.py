@@ -1,7 +1,4 @@
 # Imports
-from character import Character
-
-beast = Character(False, "Artemis", 15, 15, (2, 8), None, True)
 
 """ Item dictionary
  ├── name
@@ -80,7 +77,7 @@ items = {
     },
 
     "beast": {
-        "character": beast,
+        "character": "beast",
         "name": "Artemis the Mythical Beast",
         "description": "A true friend, cute and cuddly.\n You're safe with her.",
         "modifier": None,

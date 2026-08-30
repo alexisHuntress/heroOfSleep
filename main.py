@@ -9,7 +9,7 @@ import sys
 player = Character(True, "You", 15, 11, (2, 6), [], True)
 nightmare = Character(False, "Nightmare", 50, 15, (1, 12), [], True)
 goblin = Character(False, "The Goblin", 20, 10, (2, 10), [], True)
-
+beast = Character(False, "Artemis", 15, 15, (2, 8), None, True)
 
 def try_moving(current_room, rooms, direction):
     room = rooms[current_room]
