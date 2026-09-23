@@ -1,0 +1,22 @@
+<mxfile host="app.diagrams.net" modified="2026-08-16T00:00:00.000Z" agent="IT 140" version="24.7.17">
+  <diagram id="game-map" name="Game Map">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="title" value="Project One Game Map — replace room labels and add items, villain, and directional connections" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="170" y="30" width="780" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="r1" value="Room 1&#xa;(Start room — no item)" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1"><mxGeometry x="120" y="130" width="180" height="90" as="geometry"/></mxCell>
+        <mxCell id="r2" value="Room 2&#xa;Item: TODO" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1"><mxGeometry x="370" y="130" width="180" height="90" as="geometry"/></mxCell>
+        <mxCell id="r3" value="Room 3&#xa;Item: TODO" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1"><mxGeometry x="620" y="130" width="180" height="90" as="geometry"/></mxCell>
+        <mxCell id="r4" value="Room 4&#xa;Item: TODO" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1"><mxGeometry x="870" y="130" width="180" height="90" as="geometry"/></mxCell>
+        <mxCell id="r5" value="Room 5&#xa;Item: TODO" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1"><mxGeometry x="120" y="360" width="180" height="90" as="geometry"/></mxCell>
+        <mxCell id="r6" value="Room 6&#xa;Item: TODO" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1"><mxGeometry x="370" y="360" width="180" height="90" as="geometry"/></mxCell>
+        <mxCell id="r7" value="Room 7&#xa;Item: TODO" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1"><mxGeometry x="620" y="360" width="180" height="90" as="geometry"/></mxCell>
+        <mxCell id="r8" value="Room 8&#xa;(Villain room — no item)" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1"><mxGeometry x="870" y="360" width="180" height="90" as="geometry"/></mxCell>
+        <mxCell id="note" value="TODO: Rename rooms, place at least six items, identify the villain room, and draw directional connections. The final layout must allow a winning path." style="shape=note;whiteSpace=wrap;html=1;size=20;" vertex="1" parent="1"><mxGeometry x="270" y="560" width="600" height="100" as="geometry"/></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
