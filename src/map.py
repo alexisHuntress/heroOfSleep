@@ -1,0 +1,384 @@
+#
+from items import items
+import random
+
+
+# === Puzzles ===
+def garden_puzzle():
+    sequence = [
+        "red",
+        "blue",
+        "purple",
+        "green",
+        "blue"
+    ]
+
+    print(
+        "Six colored flowers begin to glow.\n"
+        "Red, Yellow, Blue, Green, Orange, and Purple.\n"
+        "It looks like they're trying to show you a pattern...")
+
+    for round_number in range(1, len(sequence) + 1):
+        correct_sequence = sequence[:round_number]
+
+        print("The flowers glow:")
+        print(", ".join(correct_sequence))
+
+        answer = input("Repeat the sequence: ").replace(",", " ").replace(";", " ")
+
+        player_sequence = [
+            color.strip()
+            for color in answer.split()
+        ]
+
+        if player_sequence != correct_sequence:
+            print("The flowers suddenly go dark.")
+            print("That wasn't the correct sequence.")
+            return False
+
+        print("Correct!\n")
+
+    print("All six flowers begin to glow brightly.")
+    print("You hear the door unlock.")
+
+    return True
+
+
+def hop_scotch_puzzle():
+    path = ["1", "2", "3", "4", "5", "6", "7"]
+
+    print("""
+            Jump across the court! :
+
+            23 25 07 19 14
+            15 05 21 06 18
+            12 20 04 22 16
+            13 17 03 02 11
+            24 09 01 10 08
+            """)
+
+    for square in path:
+        jump = input("Jump to square: ").strip()
+
+        if jump != square:
+            print("You jumped on the wrong square.")
+            return False
+
+    print("You completed the hopscotch path. The door unlocks.")
+    return True
+
+
+def hangman_puzzle():
+    words = [
+        "Nightmare", "Lantern", "Serenity", "Dream", "Castle",
+        "Goblin", "Hero", "Shield", "Crown", "Slumber",
+        "Shadow", "Monster", "Adventure", "Treasure", "Puzzle",
+        "Garden", "Guardian", "Victory", "Dungeon", "Dragon"
+    ]
+
+    word = random.choice(words)
+    check_word = word.lower()
+
+    max_wrong_guesses = 6
+    wrong_guesses = 0
+    guess = 1
+
+    hidden_word = "-" * len(word)
+
+    guessed_letters = []
+    repeat_warnings = []
+
+    while wrong_guesses < max_wrong_guesses and "-" in hidden_word:
+
+        print(hidden_word)
+        print(f"Wrong guesses: {wrong_guesses}/{max_wrong_guesses}")
+
+        user_input = input(
+            f"Enter a character (guess #{guess}): "
+        ).lower()
+
+        if len(user_input) == 1:
+
+            # Check if this letter was already guessed
+            if user_input in guessed_letters:
+
+                # First repeat gets a warning
+                if user_input not in repeat_warnings:
+                    print(f"You already guessed '{user_input}'. Try again.")
+                    repeat_warnings.append(user_input)
+
+                # Second repeat counts as a wrong guess
+                else:
+                    print(f"You already guessed '{user_input}' twice!")
+                    wrong_guesses += 1
+
+            else:
+                guessed_letters.append(user_input)
+
+                # Count how many times the letter appears
+                num_occurrences = check_word.count(user_input)
+
+                if num_occurrences > 0:
+
+                    position = -1
+
+                    for occurrence in range(num_occurrences):
+                        # Find the next occurrence
+                        position = check_word.find(
+                            user_input,
+                            position + 1
+                        )
+
+                        # Reveal the original correctly cased character
+                        hidden_word = (
+                                hidden_word[:position]
+                                + word[position]
+                                + hidden_word[position + 1:]
+                        )
+
+                else:
+                    wrong_guesses += 1
+
+        else:
+            print("Please enter only one character.")
+
+        guess += 1
+
+    print(hidden_word)
+
+    if "-" not in hidden_word:
+        print("Winner!", end=" ")
+        print(f"The word was {word}.")
+        return True
+    else:
+        print("Loser!", end=" ")
+        print(f"The word was {word}.")
+        return False
+
+
+# === Map ===
+"""
+Map
+Key = {
+        "I" : "Item room",
+        "R" : "Empty room"
+        "P" : "Puzzle room",
+        "B" : "Boss room",
+        "E" : "Enemy room",
+        "H" : "Hidden room"
+       }
+
+                    I00
+    B00             E00
+I01 R00 I02     R01 I03
+    I04 R02 R03 I05
+    I06 I07 P00
+    H00 E01 R06
+
+
+Room structure
+Room
+ ├── description
+ ├── empty description
+ ├── exits
+ ├── item
+ ├── enemy
+ ├── locked exits
+ ├── puzzle function
+ └── solved state
+"""
+
+rooms = {
+    "Entrance": {  # R00
+        "description": "You woke up in this room. It feels oddly familiar.",
+        "exits": {"north": "Hallway"},
+        "item": None,
+        "enemy": None,
+        "locked exits": [],
+        "puzzle": None,
+        "solved": True
+    },
+
+    "Mom's Room": {  # H00
+        "description": "Wait!\nThis is Mom's room!\nNow the Nightmare can't bother you.\nSweet Dreams Hero.",
+        "exits": {"east": "Entrance"},
+        "item": None,
+        "enemy": None,
+        "locked exits": [],
+        "puzzle": None,
+        "solved": True
+    },
+
+    "Hallway": {  # E00
+        "description": "A dark hallway stretches ahead. You hear something moving in the shadows.",
+        "exits": {"west": "Item Room 6", "east": "Hop Scotch Room", "south": "Entrance"},
+        "item": None,
+        "enemy": "minion_1",
+        "locked exits": ["west"],
+        "puzzle": None,
+        "solved": True
+    },
+
+    "Item Room 6": {  # I00
+        "description": "A long wooden chest rests against the wall.",
+        "empty description": "An empty wooden chest rests against the wall.",
+        "exits": {"east": "Hallway"},
+        "item": items["stick"],
+        "enemy": None,
+        "locked exits": [],
+        "puzzle": None,
+        "solved": True
+    },
+
+    "Hop Scotch Room": {  # P00
+        "description": "A giant hopscotch court covers the floor. Maybe you should play!",
+        "exits": {"west": "Hallway", "south": "Room with stairs up"},
+        "item": None,
+        "enemy": None,
+        "locked exits": ["south"],
+        "puzzle": hop_scotch_puzzle,
+        "solved": False
+    },
+
+    "Room with stairs up": {  # R01
+        "description": "A staircase disappears into the darkness above. Where does it lead?",
+        "exits": {"up": "Room with stairs down", "north": "Hop Scotch Room"},
+        "item": None,
+        "enemy": None,
+        "locked exits": [],
+        "puzzle": None,
+        "solved": True
+    },
+
+    "Room with stairs down": {  # I01
+        "description": "You reach the top of the stairs. Something shiny catches your eye.",
+        "empty description": "You reach the top of the stairs.",
+        "exits": {"down": "Room with stairs up", "west": "Empty Room", "north": "Monster Room"},
+        "item": items["crown"],
+        "enemy": None,
+        "locked exits": [],
+        "puzzle": None,
+        "solved": True
+    },
+
+    "Monster Room": {  # E01
+        "description": "Something much bigger is waiting in the darkness.",
+        "exits": {"north": "Treasure Room", "south": "Room with stairs down"},
+        "item": None,
+        "enemy": "mini_boss",
+        "locked exits": ["north"],
+        "puzzle": None,
+        "solved": True
+    },
+
+    "Treasure Room": {  # I02
+        "description": "You hear a familiar sound from inside the chest. Something in there wants out!",
+        "empty description": "An empty chest sits open in the room.",
+        "exits": {"south": "Monster Room"},
+        "item": items["beast"],
+        "enemy": None,
+        "locked exits": [],
+        "puzzle": None,
+        "solved": True
+    },
+
+    "Empty Room": {  # I03
+        "description": "A soft light glows in the dark room. Somehow, the shadows don't seem as scary anymore.",
+        "empty description": "The room is dark, but somehow the shadows don't seem as scary anymore.",
+        "exits": {"east": "Room with stairs down", "south": "Item Room 5"},
+        "item": items["lantern"],
+        "enemy": None,
+        "locked exits": [],
+        "puzzle": None,
+        "solved": True
+    },
+
+    "Item Room 5": {  # E02
+        "description": "Another chest! This one looks soft for some reason.",
+        "empty description": "An empty chest sits open in the room.",
+        "exits": {"west": "Long Hall", "north": "Empty Room"},
+        "item": items["cloud"],
+        "enemy": "minion_2",
+        "locked exits": [],
+        "puzzle": None,
+        "solved": True
+    },
+
+    "Long Hall": {  # R02
+        "description": "This hallway goes on forever!\nWell...\nalmost forever.",
+        "exits": {"west": "Garden", "east": "Item Room 5"},
+        "item": None,
+        "enemy": None,
+        "locked exits": [],
+        "puzzle": None,
+        "solved": True
+    },
+
+    "Garden": {  # P01
+        "description": "Wow, a candy garden!\nSix colorful flowers glow softly among the sweets.",
+        "exits": {"west": "Item room 4", "north": "Item room 2", "east": "Long Hall"},
+        "item": None,
+        "enemy": None,
+        "locked exits": ["west"],
+        "puzzle": garden_puzzle,
+        "solved": False
+    },
+
+    "Item room 4": {  # I04
+        "description": "Another chest!\nI wonder what this one holds.",
+        "empty description": "An empty chest sits open in the room.",
+        "exits": {"east": "Garden"},
+        "item": items["tunic"],
+        "enemy": None,
+        "locked exits": [],
+        "puzzle": None,
+        "solved": True
+    },
+
+    "Item room 2": {  # E03
+        "description": "A small chest sits at the foot of a cozy bed.\n"
+                       "Little bears are carved into the lid.",
+        "empty description": "An empty chest sits open at the foot of the cozy bed.",
+        "exits": {"south": "Garden", "west": "Cross Road"},
+        "item": items["leggings"],
+        "enemy": "minion_3",
+        "locked exits": [],
+        "puzzle": None,
+        "solved": True
+    },
+
+    "Cross Road": {  # P02
+        "description": "The hallway splits in several directions.\n"
+                       "Something about the path ahead feels scary.\n"
+                       "Strange symbols cover the door.",
+        "exits": {"east": "Item room 2", "west": "Item room 1", "north": "Nightmare's Room"},
+        "item": None,
+        "enemy": None,
+        "locked exits": ["north"],
+        "puzzle": hangman_puzzle,
+        "solved": False
+    },
+
+    "Item room 1": {  # I05
+        "description": "Oh look, a chest! I wonder what's inside?",
+        "empty description": "An empty chest sits open in the room.",
+        "exits": {"east": "Cross Road"},
+        "item": items["socks"],
+        "enemy": None,
+        "locked exits": [],
+        "puzzle": None,
+        "solved": True
+    },
+
+    "Nightmare's Room": {  # B00
+        "description": "The room grows dark and cold.\n"
+                       "A terrible shadow rises before you.\n"
+                       "The Nightmare has been waiting.",
+        "exits": {"south": "Cross Road"},
+        "item": None,
+        "enemy": "nightmare",
+        "locked exits": ["south"],
+        "puzzle": None,
+        "solved": True
+    }
+}
