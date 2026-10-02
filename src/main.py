@@ -230,7 +230,7 @@ def collect_equipment(player, room, characters):
 
         player.equipment.append(item)
 
-        if item["target"] == "self":
+        if item["target"] == "self" and item["stat"] != "recovery":
             player.modify_stats(item)
 
         room["description"] = room["empty description"]
