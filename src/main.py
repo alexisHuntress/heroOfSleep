@@ -1,6 +1,7 @@
 # Imports
 from character import Character
 import random
+import pygame
 import copy
 import map
 
@@ -405,31 +406,123 @@ def game_loop():
             retry = False
 
 
-"""
-# pygame setup
-pygame.init()
+# TODO: Pygame
 
-screen = pygame.display.set_mode((utils.WIDTH, utils.HEIGHT))
-clock = pygame.time.Clock()
-running = True
+# === Pygame ===
+def pygame_loop():
+    pygame.init()
 
-while running:
-    # Poll for events
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
+    player, characters, rooms = reset_game()
+    current_room = "Entrance"
 
-    # Fill screen
-    screen.fill("Black")
+    font = pygame.font.Font(None, 36)
+    description_font = pygame.font.Font(None, 28)
 
-    # RENDER YOUR GAME HERE
+    screen = pygame.display.set_mode((800, 600))
+    pygame.display.set_caption("Hero of Sleep")
 
-    pygame.display.flip()
+    clock = pygame.time.Clock()
+    running = True
 
-    clock.tick(60)
+    user_input = ""
+    input_active = True
+    command_state = None
+    message = ""
 
-pygame.quit()
-"""
+    input_box = pygame.Rect(50, 500, 700, 40)
+
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_BACKSPACE:
+                    user_input = user_input[:-1]
+
+                elif event.key == pygame.K_RETURN:
+                    command = user_input.lower().strip()
+                    user_input = ""
+                    if command_state == "move":
+                        new_room, description = try_moving(
+                            current_room,
+                            rooms,
+                            command
+                        )
+                        current_room = new_room
+                        message = ""
+                        command_state = None
+
+                    elif command == "move":
+                        room = rooms[current_room]
+                        message = "Exits: \n" + ", ".join(
+                            direction.capitalize()
+                            for direction in room["exits"].keys()
+                        )
+                        message += "\nWhich direction?"
+                        command_state = "move"
+
+                    else:
+                        message = "I don't understand that command."
+
+                else:
+                    user_input += event.unicode
+
+        screen.fill("black")
+
+        room = rooms[current_room]
+
+        room_name = font.render(
+            current_room,
+            True,
+            "white"
+        )
+
+        room_description = description_font.render(
+            room["description"],
+            True,
+            "white"
+        )
+
+        screen.blit(room_name, (50, 50))
+        screen.blit(room_description, (50, 100))
+
+        pygame.draw.rect(
+            screen,
+            "white",
+            input_box,
+            2
+        )
+
+        input_text = description_font.render(
+            "> " + user_input,
+            True,
+            "white"
+        )
+
+        screen.blit(
+            input_text,
+            (input_box.x + 10, input_box.y + 8)
+        )
+
+        if message:
+            y = 150
+
+            for line in message.split("\n"):
+                message_text = description_font.render(
+                    line,
+                    True,
+                    "white"
+                )
+
+                screen.blit(message_text, (50, y))
+                y += 30
+
+        pygame.display.flip()
+        clock.tick(60)
+
+    pygame.quit()
+
 
 if __name__ == "__main__":
-    game_loop()
+    pygame_loop()
