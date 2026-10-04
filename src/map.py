@@ -94,10 +94,20 @@ def hangman_puzzle():
         print(f"Wrong guesses: {wrong_guesses}/{max_wrong_guesses}")
 
         user_input = input(
-            f"Enter a character (guess #{guess}): "
+            f"Enter a character or guess the word (guess #{guess}): "
         ).lower()
 
-        if len(user_input) == 1:
+        # Guess the whole word
+        if len(user_input) > 1:
+            if user_input == check_word:
+                hidden_word = word
+                print("You guessed the word!")
+            else:
+                print(f"'{user_input}' is not the word!")
+                wrong_guesses += 1
+
+        # Guess a letter
+        elif len(user_input) == 1:
 
             # Check if this letter was already guessed
             if user_input in guessed_letters:
@@ -131,29 +141,20 @@ def hangman_puzzle():
 
                         # Reveal the original correctly cased character
                         hidden_word = (
-                                hidden_word[:position]
-                                + word[position]
-                                + hidden_word[position + 1:]
+                            hidden_word[:position]
+                            + word[position]
+                            + hidden_word[position + 1:]
                         )
 
                 else:
                     wrong_guesses += 1
 
         else:
-            print("Please enter only one character.")
+            print("Please enter a character or guess the word.")
 
         guess += 1
 
     print(hidden_word)
-
-    if "-" not in hidden_word:
-        print("Winner!", end=" ")
-        print(f"The word was {word}.")
-        return True
-    else:
-        print("Loser!", end=" ")
-        print(f"The word was {word}.")
-        return False
 
 
 # === Map ===

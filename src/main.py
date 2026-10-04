@@ -1,6 +1,6 @@
 # === Imports ===
 from game import *
-# import pygame_ui
+from pygame_ui import pygame_loop
 
 
 # === Game Loop ===
@@ -162,4 +162,5 @@ def game_loop():  # TODO: Game Loop
 
 
 if __name__ == "__main__":
-    game_loop()
+    # game_loop()
+    pygame_loop()
