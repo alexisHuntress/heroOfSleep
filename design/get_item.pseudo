@@ -7,19 +7,34 @@
 # Write pseudocode, not Python code. Use clear indentation and course-appropriate
 # keywords such as INPUT, OUTPUT, IF, ELSE, SET, ADD, or similar terms.
 
-# TODO 1: Identify the information the get-item process needs.
-# Consider the current room, item in that room, and player's inventory.
+FUNCTION collect_equipment(player, room, characters)
 
-# TODO 2: Prompt for and receive the player's get-item command.
+    LET enemy_name EQUAL room enemy
 
-# TODO 3: Validate whether the requested item is available in the current
-# room. Show the decision clearly.
+    IF enemy_name IS NOT NONE
+        LET enemy EQUAL character matching enemy_name
 
-# TODO 4: Describe what happens when the item request is valid.
-# Include the inventory update and player output.
+        IF enemy IS alive
+            PUT "You can't open the chest while enemy is guarding it!"
+            RETURN
+        END IF
+    END IF
 
-# TODO 5: Describe what happens when the item request is invalid.
-# Include the output the player should receive.
+    IF room HAS an item
+        LET item EQUAL room item
 
-# TODO 6: Show how the process returns to or continues the larger gameplay
-# loop after the command is handled.
+        ADD item TO player equipment
+
+        IF item target EQUALS "self" AND item stat DOES NOT EQUAL "recovery"
+            MODIFY player stats using item
+        END IF
+
+        SET room description EQUAL room empty description
+        SET room item EQUAL NONE
+
+        PUT "You collected item!"
+    ELSE
+        PUT "There is nothing to collect."
+    END IF
+
+END FUNCTION

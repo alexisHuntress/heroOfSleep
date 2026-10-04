@@ -7,19 +7,61 @@
 # Write pseudocode, not Python code. Use clear indentation and course-appropriate
 # keywords such as INPUT, OUTPUT, IF, ELSE, WHILE, SET, or similar terms.
 
-# TODO 1: Identify the information the movement process needs.
-# Consider the player's current room and movement command.
+FUNCTION try_moving(current_room, rooms, direction)
 
-# TODO 2: Prompt for and receive the player's movement command.
+    LET room EQUAL current room
 
-# TODO 3: Validate whether the requested movement is possible from the
-# current room. Show the decision clearly.
+    IF direction IS NOT in room exits
+        RETURN current_room AND "You can't travel in that direction."
+    END IF
 
-# TODO 4: Describe what happens when the movement command is valid.
-# Include the room update and player output.
+    IF direction IS in room locked exits
+        RETURN current_room AND "That way is locked."
+    END IF
 
-# TODO 5: Describe what happens when the movement command is invalid.
-# Include the output the player should receive.
+    SET current_room EQUAL room exit matching direction
+    LET description EQUAL current room description
 
-# TODO 6: Show how movement fits into repeated gameplay.
-# The final game continues accepting commands until a required ending occurs.
+    RETURN current_room AND description
+
+END FUNCTION
+
+
+ELSE IF command EQUALS "move"
+
+    LET enemy_name EQUAL room enemy
+
+    IF enemy_name IS NOT NONE AND enemy IS alive
+        PUT "The enemy blocks your path! You must Attack or Run."
+
+    ELSE
+        PUT available room exits
+
+        GET direction from user INPUT
+        CONVERT direction to lowercase
+        REMOVE extra spaces from direction
+        CORRECT direction INPUT using valid directions
+
+        IF direction IS "north", "south", "east", "west", "up", OR "down"
+
+            LET new_room AND description EQUAL result of trying to move
+
+            IF new_room DOES NOT EQUAL current_room
+                SET current_room EQUAL new_room
+
+                IF current_room EQUALS "Entrance"
+                    CHECK for hidden room
+                END IF
+            END IF
+
+            PUT description
+
+            IF current_room EQUALS "Mom's Room"
+                PUT secret victory message
+                SET running EQUAL FALSE
+            END IF
+
+        ELSE
+            PUT "That is not a valid direction."
+        END IF
+    END IF

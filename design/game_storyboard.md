@@ -7,25 +7,42 @@
 
 **Theme:**
 
-TODO: Name and briefly describe your game's theme.
+Hero of Sleep (name pending) A young hero overcomes his
+nightmares.
 
 **Storyline:**
 
-TODO: In one short paragraph, explain the setting, the player's goal, the items
-the player must gather, and the threat created by the villain.
+The setting takes place in a strange, nightmarish dream
+dungeon.
+The player's goal is to escape or defeat the
+Nightmare ruling the dungeon.
+Along the way, the player will collect up to eight items, such as the Cypress Stick and Lantern of Lulling,
+to aid in their journey.
+These items will help the hero overcome enemies, solve puzzles, and navigate the dungeon.
+Should the hero fail to defeat the Nightmare, all hope will be lost.
+
 
 ## Rooms
 
 Project One requires a minimum of eight rooms.
 
-1. TODO: Start room
-2. TODO: Room
-3. TODO: Room
-4. TODO: Room
-5. TODO: Room
-6. TODO: Room
-7. TODO: Room
-8. TODO: Villain room
+1. The Waking Room
+2. Shadow Hall
+3. The Bear Room
+4. Hopscotch Court
+5. The Dark Stairway
+6. The Upper Landing
+7. The Guardian's Hall
+8. The Treasure Room
+9. The Dark Room
+10. The Cloud Chamber
+11. The Endless Hall
+12. The Candy Garden
+13. The Bear's Den
+14. The Noisy Room
+15. The Crossroads
+16. The Lonely Room
+17. The Nightmare's Chamber
 
 Add more rooms if your design needs them.
 
@@ -34,31 +51,35 @@ Add more rooms if your design needs them.
 With the minimum eight-room design, Project One requires at least six items.
 Every room except the start room and villain room must contain one item.
 
-1. TODO: Item
-2. TODO: Item
-3. TODO: Item
-4. TODO: Item
-5. TODO: Item
-6. TODO: Item
+1. Socks of Serenity
+2. Leggings of Recovery
+3. Tunic of Rest
+4. Crown of Dreams
+5. Cypress Stick
+6. Cloud Shield
+7. Lantern of Lulling
+8. Artemis the Mythical Beast
 
 If you add rooms beyond the minimum, add an item for every additional room
 except the start room and villain room.
 
 ## Villain
 
-TODO: Identify and briefly describe the villain.
+The Nightmare is the ruler and final enemy of the dream dungeon.
+Born from dark and twisted dreams, he has taken control of the dream world and filled it with monsters.
+The player must eventually confront and defeat him to restore peaceful dreams to the kingdom.
 
 ## Storyboard and Map Check
 
 Before submitting, compare this storyboard with `game_map.drawio`.
 
-* [ ] I included at least eight rooms.
-* [ ] I included at least six items for an eight-room design.
+* [x] I included at least eight rooms.
+* [x] I included at least six items for an eight-room design.
 * [ ] The start room has no item.
-* [ ] The villain room has no item.
+* [x] The villain room has no item.
 * [ ] Every room except the start room and villain room contains one item.
-* [ ] Room, item, and villain names match my map.
-* [ ] The map allows the player to collect all required items before the
+* [x] Room, item, and villain names match my map.
+* [x] The map allows the player to collect all required items before the
   villain is encountered.
 
 ## Project Two Handoff
