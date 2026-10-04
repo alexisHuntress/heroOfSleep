@@ -178,6 +178,7 @@ I01 R00 I02     R01 I03
 
 Room structure
 Room
+ ├── name
  ├── description
  ├── empty description
  ├── exits
@@ -190,9 +191,13 @@ Room
 
 rooms = {
     "Entrance": {  # R00
-        "description": "You woke up in this room. It feels oddly familiar.",
+        "name": "The Waking Room",
+        "description": "You woke up in this room. It feels oddly familiar.\n"
+                       "There's a fancy stick in the center of the room\n"
+                       "It may be dangerous to go alone without it.",
+        "empty description": "You took the fancy stick from here",
         "exits": {"north": "Hallway"},
-        "item": None,
+        "item": items["stick"],
         "enemy": None,
         "locked exits": [],
         "puzzle": None,
@@ -200,7 +205,11 @@ rooms = {
     },
 
     "Mom's Room": {  # H00
-        "description": "Wait!\nThis is Mom's room!\nNow the Nightmare can't bother you.\nSweet Dreams Hero.",
+        "name": "Mom's Room",
+        "description": "Wait!\n"
+                       "This is Mom's room!\n"
+                       "Now the Nightmare can't bother you.\n"
+                       "Sweet Dreams Hero.",
         "exits": {"east": "Entrance"},
         "item": None,
         "enemy": None,
@@ -210,6 +219,7 @@ rooms = {
     },
 
     "Hallway": {  # E00
+        "name": "Shadow Hall",
         "description": "A dark hallway stretches ahead. You hear something moving in the shadows.",
         "exits": {"west": "Item Room 6", "east": "Hop Scotch Room", "south": "Entrance"},
         "item": None,
@@ -220,10 +230,12 @@ rooms = {
     },
 
     "Item Room 6": {  # I00
-        "description": "A long wooden chest rests against the wall.",
+        "name": "The Bear Room",
+        "description": "A small chest sits against the wall.\n"
+                       "Little bears are carved into the lid.",
         "empty description": "An empty wooden chest rests against the wall.",
         "exits": {"east": "Hallway"},
-        "item": items["stick"],
+        "item": items["leggings"],
         "enemy": None,
         "locked exits": [],
         "puzzle": None,
@@ -231,6 +243,7 @@ rooms = {
     },
 
     "Hop Scotch Room": {  # P00
+        "name": "Hopscotch Court",
         "description": "A giant hopscotch court covers the floor. Maybe you should play!",
         "exits": {"west": "Hallway", "south": "Room with stairs up"},
         "item": None,
@@ -241,6 +254,7 @@ rooms = {
     },
 
     "Room with stairs up": {  # R01
+        "name": "The Dark Stairway",
         "description": "A staircase disappears into the darkness above. Where does it lead?",
         "exits": {"up": "Room with stairs down", "north": "Hop Scotch Room"},
         "item": None,
@@ -251,6 +265,7 @@ rooms = {
     },
 
     "Room with stairs down": {  # I01
+        "name": "The Upper Landing",
         "description": "You reach the top of the stairs. Something shiny catches your eye.",
         "empty description": "You reach the top of the stairs.",
         "exits": {"down": "Room with stairs up", "west": "Empty Room", "north": "Monster Room"},
@@ -262,6 +277,7 @@ rooms = {
     },
 
     "Monster Room": {  # E01
+        "name": "The Guardian's Hall",
         "description": "Something much bigger is waiting in the darkness.",
         "exits": {"north": "Treasure Room", "south": "Room with stairs down"},
         "item": None,
@@ -272,6 +288,7 @@ rooms = {
     },
 
     "Treasure Room": {  # I02
+        "name": "The Treasure Room",
         "description": "You hear a familiar sound from inside the chest. Something in there wants out!",
         "empty description": "An empty chest sits open in the room.",
         "exits": {"south": "Monster Room"},
@@ -283,6 +300,7 @@ rooms = {
     },
 
     "Empty Room": {  # I03
+        "name": "The Dark Room",
         "description": "A soft light glows in the dark room. Somehow, the shadows don't seem as scary anymore.",
         "empty description": "The room is dark, but somehow the shadows don't seem as scary anymore.",
         "exits": {"east": "Room with stairs down", "south": "Item Room 5"},
@@ -294,6 +312,7 @@ rooms = {
     },
 
     "Item Room 5": {  # E02
+        "name": "The Cloud Chamber",
         "description": "Another chest! This one looks soft for some reason.",
         "empty description": "An empty chest sits open in the room.",
         "exits": {"west": "Long Hall", "north": "Empty Room"},
@@ -305,7 +324,10 @@ rooms = {
     },
 
     "Long Hall": {  # R02
-        "description": "This hallway goes on forever!\nWell...\nalmost forever.",
+        "name": "The Endless Hall",
+        "description": "This hallway goes on forever!\n"
+                       "Well...\n"
+                       "Almost forever.",
         "exits": {"west": "Garden", "east": "Item Room 5"},
         "item": None,
         "enemy": None,
@@ -315,8 +337,10 @@ rooms = {
     },
 
     "Garden": {  # P01
-        "description": "Wow, a candy garden!\nSix colorful flowers glow softly among the sweets.",
-        "exits": {"west": "Item room 4", "north": "Item room 2", "east": "Long Hall"},
+        "name": "The Candy Garden",
+        "description": "Wow, a candy garden!\n"
+                       "Six colorful flowers glow softly among the sweets.",
+        "exits": {"west": "Item room 4", "north": "Empty room 2", "east": "Long Hall"},
         "item": None,
         "enemy": None,
         "locked exits": ["west"],
@@ -325,7 +349,9 @@ rooms = {
     },
 
     "Item room 4": {  # I04
-        "description": "Another chest!\nI wonder what this one holds.",
+        "name": "The Bear's Den",
+        "description": "Another chest!\n"
+                       "I wonder what this one holds.",
         "empty description": "An empty chest sits open in the room.",
         "exits": {"east": "Garden"},
         "item": items["tunic"],
@@ -335,12 +361,11 @@ rooms = {
         "solved": True
     },
 
-    "Item room 2": {  # E03
-        "description": "A small chest sits at the foot of a cozy bed.\n"
-                       "Little bears are carved into the lid.",
-        "empty description": "An empty chest sits open at the foot of the cozy bed.",
+    "Empty room 2": {  # E03
+        "name": "The Noisy Room",
+        "description": "You hear strange noises upon entering this room.",
         "exits": {"south": "Garden", "west": "Cross Road"},
-        "item": items["leggings"],
+        "item": None,
         "enemy": "minion_3",
         "locked exits": [],
         "puzzle": None,
@@ -348,10 +373,11 @@ rooms = {
     },
 
     "Cross Road": {  # P02
+        "name": "The Crossroads",
         "description": "The hallway splits in several directions.\n"
                        "Something about the path ahead feels scary.\n"
                        "Strange symbols cover the door.",
-        "exits": {"east": "Item room 2", "west": "Item room 1", "north": "Nightmare's Room"},
+        "exits": {"east": "Empty room 2", "west": "Item room 1", "north": "Nightmare's Room"},
         "item": None,
         "enemy": None,
         "locked exits": ["north"],
@@ -360,6 +386,7 @@ rooms = {
     },
 
     "Item room 1": {  # I05
+        "name": "The Lonely Room",
         "description": "Oh look, a chest! I wonder what's inside?",
         "empty description": "An empty chest sits open in the room.",
         "exits": {"east": "Cross Road"},
@@ -371,6 +398,7 @@ rooms = {
     },
 
     "Nightmare's Room": {  # B00
+        "name": "The Nightmare's Chamber",
         "description": "The room grows dark and cold.\n"
                        "A terrible shadow rises before you.\n"
                        "The Nightmare has been waiting.",
