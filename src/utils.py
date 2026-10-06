@@ -1,17 +1,17 @@
 # === Constants ===
 escape_chance = 65
-
+hangman_guesses = 7
 
 # === Character Values ===
 characters = {
     "player": {
         "is_player": True,
         "is_alive": True,
-        "damage_dice": (2, 6),
+        "damage_dice": (1, 8),
         "equipment": [],
         "name": "You",
-        "hp": 15,
-        "ac": 11
+        "hp": 20,
+        "ac": 12
     },
 
     "nightmare": {
@@ -21,7 +21,7 @@ characters = {
         "equipment": [],
         "name": "Nightmare",
         "hp": 50,
-        "ac": 15
+        "ac": 13
     },
 
     "minion_1": {
@@ -37,7 +37,7 @@ characters = {
     "minion_2": {
         "is_player": False,
         "is_alive": True,
-        "damage_dice": (1, 6),
+        "damage_dice": (1, 4),
         "equipment": [],
         "name": "Nightmare Minion",
         "hp": 14,
@@ -74,3 +74,4 @@ characters = {
         "ac": 15
     }
 }
+

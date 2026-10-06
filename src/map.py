@@ -1,17 +1,14 @@
-#
+# === Imports ===
+from utils import hangman_guesses
 from items import items
 import random
 
 
 # === Puzzles ===
 def garden_puzzle():
-    sequence = [
-        "red",
-        "blue",
-        "purple",
-        "green",
-        "blue"
-    ]
+    """This function is a loop that replicates the game, simon says."""
+
+    sequence = ["red", "blue", "purple", "green", "blue"]
 
     print(
         "Six colored flowers begin to glow.\n"
@@ -21,7 +18,7 @@ def garden_puzzle():
     for round_number in range(1, len(sequence) + 1):
         correct_sequence = sequence[:round_number]
 
-        print("The flowers glow:")
+        print("The flowers glow before dimming:")
         print(", ".join(correct_sequence))
 
         answer = input("Repeat the sequence: ").replace(",", " ").replace(";", " ")
@@ -45,21 +42,24 @@ def garden_puzzle():
 
 
 def hop_scotch_puzzle():
-    path = ["1", "2", "3", "4", "5", "6", "7"]
+    """This function takes a user input and compares it
+     against a list of lists to "move" across a hopscotch court."""
+    path = [["1"], {"2", "3"}, ["4"], {"5", "6"}, ["7"]]
 
-    print("""
-            Jump across the court! :
-
-            23 25 07 19 14
-            15 05 21 06 18
-            12 20 04 22 16
-            13 17 03 02 11
-            24 09 01 10 08
-            """)
-
+    # Output the court and take user input.
     for square in path:
-        jump = input("Jump to square: ").strip()
+        print("""Jump across the court!
 
+                 [ 7 ]
+              ( 5 ) ( 6 )
+                 [ 4 ]
+              ( 3 ) ( 2 )
+                 [ 1 ]
+            """)
+        print(f"Which square do you jump on?")
+        jump = input("Jump: ").replace(",", " ").split()
+
+        # Compare inputs
         if jump != square:
             print("You jumped on the wrong square.")
             return False
@@ -69,6 +69,12 @@ def hop_scotch_puzzle():
 
 
 def hangman_puzzle():
+    """This function replicates the classic game hangman.
+    At the start of each play through, the function selects a
+    random word from the available list.
+    The function then enters a while loop taking user input until either the
+    word is guessed or the max number of guesses is exceeded."""
+
     words = [
         "Nightmare", "Lantern", "Serenity", "Dream", "Castle",
         "Goblin", "Hero", "Shield", "Crown", "Slumber",
@@ -76,17 +82,19 @@ def hangman_puzzle():
         "Garden", "Guardian", "Victory", "Dungeon", "Dragon"
     ]
 
+    max_wrong_guesses = hangman_guesses
     word = random.choice(words)
+    hidden_word = "-" * len(word)
     check_word = word.lower()
-
-    max_wrong_guesses = 6
+    guessed_letters = []
+    repeat_warnings = []
     wrong_guesses = 0
     guess = 1
 
-    hidden_word = "-" * len(word)
-
-    guessed_letters = []
-    repeat_warnings = []
+    print(f"A secret word begins to form on the door.\n"
+          f"You can see how long the word is but the letters are blurry.\n"
+          f"Guess one letter at a time, or try to guess the whole word.\n"
+          f"You have {hangman_guesses} wrong attempts to guess the word.")
 
     while wrong_guesses < max_wrong_guesses and "-" in hidden_word:
 
@@ -114,16 +122,17 @@ def hangman_puzzle():
 
                 # First repeat gets a warning
                 if user_input not in repeat_warnings:
-                    print(f"You already guessed '{user_input}'. Try again.")
+                    print(f"You already guessed '{user_input.upper()}'. Try again.")
                     repeat_warnings.append(user_input)
 
                 # Second repeat counts as a wrong guess
                 else:
-                    print(f"You already guessed '{user_input}' twice!")
+                    print(f"You already guessed '{user_input.upper()}' twice!")
                     wrong_guesses += 1
 
             else:
                 guessed_letters.append(user_input)
+                print(f"You have guessed {', '.join(guessed_letters).upper()}")
 
                 # Count how many times the letter appears
                 num_occurrences = check_word.count(user_input)
@@ -173,8 +182,8 @@ Key = {
     B00             E00
 I01 R00 I02     R01 I03
     I04 R02 R03 I05
-    I06 I07 P00
-    H00 E01 R06
+            I06 I07 P00
+            H00 E01 R06
 
 
 Room structure
@@ -289,7 +298,7 @@ rooms = {
     },
 
     "Treasure Room": {  # I02
-        "name": "The Treasure Room",
+        "name": "The Guardian's Cage",
         "description": "You hear a familiar sound from inside the chest. Something in there wants out!",
         "empty description": "An empty chest sits open in the room.",
         "exits": {"south": "Monster Room"},
@@ -302,7 +311,8 @@ rooms = {
 
     "Empty Room": {  # I03
         "name": "The Dark Room",
-        "description": "A soft light glows in the dark room. Somehow, the shadows don't seem as scary anymore.",
+        "description": "A small lantern glows softly in the dark room.\n"
+                       "Somehow, the shadows don't seem as scary anymore.",
         "empty description": "The room is dark, but somehow the shadows don't seem as scary anymore.",
         "exits": {"east": "Room with stairs down", "south": "Item Room 5"},
         "item": items["lantern"],

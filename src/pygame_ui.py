@@ -13,24 +13,78 @@ def pygame_loop():
     player, characters, rooms = reset_game()
     current_room = "Entrance"
 
-    font = pygame.font.Font(None, 36)
-    description_font = pygame.font.Font(None, 28)
-    button_font = pygame.font.Font(None, 24)
+    font = pygame.font.SysFont("consolas", 32)
+    description_font = pygame.font.SysFont("consolas", 24)
+    button_font = pygame.font.SysFont("consolas", 20)
+    map_font = pygame.font.SysFont("consolas", 14)
 
-    screen = pygame.display.set_mode((800, 600))
+    screen = pygame.display.set_mode((1000, 650))
     pygame.display.set_caption("Hero of Sleep")
 
     clock = pygame.time.Clock()
     running = True
 
     user_input = ""
+    last_command = ""
     command_state = None
-    message = ""
+    message = (
+        "Welcome, Hero!\n"
+        "Use the command buttons below or type a command.\n"
+        "Choose Help at any time to see what each command does."
+    )
+
+    visited_rooms = {current_room}
 
     puzzle_data = {}
     run_data = {}
 
-    input_box = pygame.Rect(50, 530, 700, 40)
+    flower_flash = None
+    flower_flash_index = 0
+    flower_flash_on = False
+    flower_flash_time = 0
+    flower_click_flash = None
+    flower_click_flash_until = 0
+
+    input_box = pygame.Rect(50, 580, 650, 40)
+
+    direction_positions = {
+        "north": (775, 455),
+        "south": (775, 535),
+        "west": (695, 495),
+        "east": (855, 495),
+        "up": (695, 455),
+        "down": (855, 455)
+    }
+    direction_buttons = {
+        direction: pygame.Rect(x, y, 70, 32)
+        for direction, (x, y) in direction_positions.items()
+    }
+
+    hop_buttons = {
+        "1": pygame.Rect(325, 480, 50, 32),
+        "3": pygame.Rect(295, 440, 50, 32),
+        "2": pygame.Rect(355, 440, 50, 32),
+        "4": pygame.Rect(325, 400, 50, 32),
+        "5": pygame.Rect(295, 360, 50, 32),
+        "6": pygame.Rect(355, 360, 50, 32),
+        "7": pygame.Rect(325, 320, 50, 32)
+    }
+
+    flower_names = ["red", "yellow", "blue", "green", "orange", "purple"]
+    flower_buttons = {
+        color: pygame.Rect(280 + (index % 2) * 120,
+                           300 + (index // 2) * 42, 105, 32)
+        for index, color in enumerate(flower_names)
+    }
+
+    flower_colors = {
+        "red": (255, 0, 0),
+        "yellow": (255, 255, 0),
+        "blue": (0, 100, 255),
+        "green": (0, 200, 0),
+        "orange": (255, 165, 0),
+        "purple": (160, 32, 240)
+    }
 
     commands = [
         "Move",
@@ -53,7 +107,7 @@ def pygame_loop():
         column = index % 4
 
         x = 50 + column * 175
-        y = 440 + row * 40
+        y = 490 + row * 40
 
         command_buttons[command_name.lower()] = pygame.Rect(
             x,
@@ -80,6 +134,74 @@ def pygame_loop():
             "Entrance"
         )
 
+    map_positions = {
+        "Entrance": (4, 6), "Mom's Room": (3, 6), "Hallway": (4, 5),
+        "Item Room 6": (3, 5), "Hop Scotch Room": (5, 5),
+        "Room with stairs up": (5, 6), "Room with stairs down": (5, 3),
+        "Monster Room": (5, 2), "Treasure Room": (5, 1),
+        "Empty Room": (4, 3), "Item Room 5": (4, 4), "Long Hall": (3, 4),
+        "Garden": (2, 4), "Item room 4": (1, 4), "Empty room 2": (2, 3),
+        "Cross Road": (1, 3), "Item room 1": (0, 3), "Nightmare's Room": (1, 2)
+    }
+
+    def wrap_text(text, text_font, max_width):
+        wrapped_lines = []
+
+        for paragraph in text.split("\n"):
+            if not paragraph:
+                wrapped_lines.append("")
+                continue
+
+            words = paragraph.split()
+            line = words[0]
+
+            for word in words[1:]:
+                test_line = f"{line} {word}"
+
+                if text_font.size(test_line)[0] <= max_width:
+                    line = test_line
+                else:
+                    wrapped_lines.append(line)
+                    line = word
+
+            wrapped_lines.append(line)
+
+        return wrapped_lines
+
+    def draw_minimap():
+        map_x, map_y, cell, room_size = 715, 35, 36, 16
+        screen.blit(button_font.render("Mini Map", True, "white"), (map_x, map_y - 25))
+        drawn_connections = set()
+
+        for room_key in visited_rooms:
+            if room_key not in map_positions:
+                continue
+            x1, y1 = map_positions[room_key]
+            center1 = (map_x + x1 * cell + room_size // 2,
+                       map_y + y1 * cell + room_size // 2)
+            for destination in rooms[room_key]["exits"].values():
+                if destination not in visited_rooms or destination not in map_positions:
+                    continue
+                connection = frozenset((room_key, destination))
+                if connection in drawn_connections:
+                    continue
+                x2, y2 = map_positions[destination]
+                center2 = (map_x + x2 * cell + room_size // 2,
+                           map_y + y2 * cell + room_size // 2)
+                pygame.draw.line(screen, "gray", center1, center2, 2)
+                drawn_connections.add(connection)
+
+        for room_key in visited_rooms:
+            if room_key not in map_positions:
+                continue
+            grid_x, grid_y = map_positions[room_key]
+            rect = pygame.Rect(map_x + grid_x * cell, map_y + grid_y * cell,
+                               room_size, room_size)
+            pygame.draw.rect(screen, "white", rect, 0 if room_key == current_room else 2)
+
+        screen.blit(map_font.render("Filled = You", True, "white"),
+                    (map_x, map_y + 7 * cell))
+
     def start_puzzle(room):
         nonlocal command_state
         nonlocal message
@@ -97,71 +219,61 @@ def pygame_loop():
 
         if puzzle_name == "hop_scotch_puzzle":
             puzzle_data = {
-                "path": ["1", "2", "3", "4", "5", "6", "7"],
-                "position": 0
+                "path": [["1"], ["3", "2"], ["4"], ["5", "6"], ["7"]],
+                "position": 0,
+                "jump": []
             }
-
             message = (
-                "Jump across the court!\n\n"
-                "23 25 07 19 14\n"
-                "15 05 21 06 18\n"
-                "12 20 04 22 16\n"
-                "13 17 03 02 11\n"
-                "24 09 01 10 08\n\n"
-                "Jump to square:"
+                "Jump across the court!\n"
+                "Click the square or type each jump.\n"
+                "For double squares, choose both numbers.\n"
+                "Which square do you jump on?"
             )
-
             command_state = "hopscotch"
 
         elif puzzle_name == "garden_puzzle":
-            puzzle_data = {
-                "sequence": [
-                    "red",
-                    "blue",
-                    "purple",
-                    "green",
-                    "blue"
-                ],
-                "round": 1
-            }
+            nonlocal flower_flash
+            nonlocal flower_flash_index
+            nonlocal flower_flash_on
+            nonlocal flower_flash_time
 
+            puzzle_data = {
+                "sequence": ["red", "blue", "purple", "green", "blue"],
+                "round": 1,
+                "player_sequence": []
+            }
             message = (
                 "Six colored flowers begin to glow.\n"
-                "Red, Yellow, Blue, Green, Orange, and Purple.\n\n"
-                "The flowers glow:\n"
-                "red\n\n"
-                "Repeat the sequence:"
+                "Watch the pattern, then repeat it."
             )
-
             command_state = "garden"
+            flower_flash = puzzle_data["sequence"][:puzzle_data["round"]]
+            flower_flash_index = 0
+            flower_flash_on = True
+            flower_flash_time = pygame.time.get_ticks()
 
         elif puzzle_name == "hangman_puzzle":
             words = [
-                "Nightmare", "Lantern", "Serenity", "Dream",
-                "Castle", "Goblin", "Hero", "Shield", "Crown",
-                "Slumber", "Shadow", "Monster", "Adventure",
-                "Treasure", "Puzzle", "Garden", "Guardian",
-                "Victory", "Dungeon", "Dragon"
+                "Nightmare", "Lantern", "Serenity", "Dream", "Castle",
+                "Goblin", "Hero", "Shield", "Crown", "Slumber",
+                "Shadow", "Monster", "Adventure", "Treasure", "Puzzle",
+                "Garden", "Guardian", "Victory", "Dungeon", "Dragon"
             ]
-
             word = random.choice(words)
-
             puzzle_data = {
-                "word": word,
-                "check_word": word.lower(),
-                "hidden_word": "-" * len(word),
-                "wrong_guesses": 0,
-                "guessed_letters": [],
-                "repeat_warnings": [],
-                "guess": 1
+                "word": word, "check_word": word.lower(),
+                "hidden_word": "-" * len(word), "wrong_guesses": 0,
+                "guessed_letters": [], "repeat_warnings": [], "guess": 1
             }
-
             message = (
+                "A secret word begins to form on the door.\n"
+                "You can see how long the word is but the letters are blurry.\n"
+                "Guess one letter at a time, or try to guess the whole word.\n"
+                "You have 6 wrong attempts to guess the word.\n\n"
                 f"{puzzle_data['hidden_word']}\n"
-                "Wrong guesses: 0/6\n\n"
-                "Enter a character:"
+                "Wrong guesses: 0/6\n"
+                "Enter a character or guess the word:"
             )
-
             command_state = "hangman"
 
     while running:
@@ -178,12 +290,39 @@ def pygame_loop():
                             submitted_command = command_name
                             break
 
+                elif command_state == "move":
+                    for direction, button in direction_buttons.items():
+                        if direction in rooms[current_room]["exits"] and button.collidepoint(event.pos):
+                            submitted_command = direction
+                            break
+
+                elif command_state == "hopscotch":
+                    for square, button in hop_buttons.items():
+                        if button.collidepoint(event.pos):
+                            submitted_command = square
+                            break
+
+                elif command_state == "garden" and flower_flash is None:
+                    for color, button in flower_buttons.items():
+                        if button.collidepoint(event.pos):
+                            submitted_command = color
+                            flower_click_flash = color
+                            flower_click_flash_until = pygame.time.get_ticks() + 250
+                            break
+
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_BACKSPACE:
                     user_input = user_input[:-1]
 
+                elif event.key == pygame.K_UP:
+                    user_input = last_command
+
                 elif event.key == pygame.K_RETURN:
-                    submitted_command = user_input.lower().strip()
+                    typed_command = user_input.lower().strip()
+                    if typed_command:
+                        last_command = typed_command
+                    if command_state != "garden" or flower_flash is None:
+                        submitted_command = typed_command
                     user_input = ""
 
                 else:
@@ -205,6 +344,7 @@ def pygame_loop():
 
                     command_state = None
                     message = ""
+                    visited_rooms = {current_room}
 
                 elif command in ["no", "n"]:
                     running = False
@@ -227,6 +367,7 @@ def pygame_loop():
 
                     command_state = None
                     message = ""
+                    visited_rooms = {current_room}
 
             # === Move Direction ===
             elif command_state == "move":
@@ -251,6 +392,7 @@ def pygame_loop():
                     )
 
                     current_room = new_room
+                    visited_rooms.add(current_room)
 
                     if current_room == old_room:
                         message = move_message
@@ -296,6 +438,7 @@ def pygame_loop():
                         enemy.hp = enemy.max_hp
 
                     current_room = room["exits"][command]
+                    visited_rooms.add(current_room)
                     command_state = None
                     message = "You escaped!"
 
@@ -311,184 +454,114 @@ def pygame_loop():
 
             # === Hopscotch ===
             elif command_state == "hopscotch":
-                expected = puzzle_data["path"][
-                    puzzle_data["position"]
-                ]
+                expected = puzzle_data["path"][puzzle_data["position"]]
+                entered = command.replace(",", " ").split()
 
-                if command != expected:
-                    message = (
-                        "You jumped on the wrong square.\n"
-                        "The puzzle remains unsolved."
-                    )
+                if len(expected) == 1:
+                    puzzle_data["jump"] = entered
+                else:
+                    puzzle_data["jump"].extend(entered)
+                    if len(puzzle_data["jump"]) < len(expected):
+                        message = "Choose the other square in this jump."
+                        continue
 
+                if set(puzzle_data["jump"]) != set(expected):
+                    message = "You jumped on the wrong square.\nThe puzzle remains unsolved."
                     command_state = None
-
                 else:
                     puzzle_data["position"] += 1
-
-                    if puzzle_data["position"] == len(
-                        puzzle_data["path"]
-                    ):
+                    puzzle_data["jump"] = []
+                    if puzzle_data["position"] == len(puzzle_data["path"]):
                         room["solved"] = True
                         room["locked exits"].clear()
-
-                        message = (
-                            "You completed the hopscotch path.\n"
-                            "The door unlocks."
-                        )
-
+                        message = "You completed the hopscotch path. The door unlocks."
                         command_state = None
-
                     else:
-                        message = "Correct!\nJump to square:"
+                        message = "Correct!\nWhich square do you jump on?"
 
             # === Garden ===
             elif command_state == "garden":
-                answer = (
-                    command
-                    .replace(",", " ")
-                    .replace(";", " ")
-                )
+                entered = command.replace(",", " ").replace(";", " ").split()
+                puzzle_data["player_sequence"].extend(entered)
+                correct_sequence = puzzle_data["sequence"][:puzzle_data["round"]]
 
-                player_sequence = [
-                    color.strip()
-                    for color in answer.split()
-                ]
-
-                round_number = puzzle_data["round"]
-
-                correct_sequence = puzzle_data["sequence"][
-                    :round_number
-                ]
-
-                if player_sequence != correct_sequence:
-                    message = (
-                        "The flowers suddenly go dark.\n"
-                        "That wasn't the correct sequence.\n"
-                        "The puzzle remains unsolved."
-                    )
-
+                if puzzle_data["player_sequence"] != correct_sequence[:len(puzzle_data["player_sequence"])]:
+                    message = ("The flowers suddenly go dark.\n"
+                               "That wasn't the correct sequence.\n"
+                               "The puzzle remains unsolved.")
                     command_state = None
-
-                else:
+                elif len(puzzle_data["player_sequence"]) == len(correct_sequence):
                     puzzle_data["round"] += 1
-
-                    if puzzle_data["round"] > len(
-                        puzzle_data["sequence"]
-                    ):
+                    puzzle_data["player_sequence"] = []
+                    if puzzle_data["round"] > len(puzzle_data["sequence"]):
                         room["solved"] = True
                         room["locked exits"].clear()
-
-                        message = (
-                            "All six flowers begin to glow brightly.\n"
-                            "You hear the door unlock."
-                        )
-
+                        message = "All six flowers begin to glow brightly.\nYou hear the door unlock."
                         command_state = None
-
                     else:
-                        next_sequence = puzzle_data["sequence"][
-                            :puzzle_data["round"]
-                        ]
-
-                        message = (
-                            "Correct!\n\n"
-                            "The flowers glow:\n"
-                            + ", ".join(next_sequence)
-                            + "\n\nRepeat the sequence:"
-                        )
+                        flower_flash = puzzle_data["sequence"][:puzzle_data["round"]]
+                        flower_flash_index = 0
+                        flower_flash_on = True
+                        flower_flash_time = pygame.time.get_ticks()
+                        message = "Correct!\nWatch the next pattern..."
 
             # === Hangman ===
             elif command_state == "hangman":
-                if len(command) != 1:
-                    message = "Please enter only one character."
+                guessed_letters = puzzle_data["guessed_letters"]
+                repeat_warnings = puzzle_data["repeat_warnings"]
+                feedback = ""
 
-                else:
-                    guessed_letters = puzzle_data[
-                        "guessed_letters"
-                    ]
-
-                    repeat_warnings = puzzle_data[
-                        "repeat_warnings"
-                    ]
-
+                if len(command) > 1:
+                    if command == puzzle_data["check_word"]:
+                        puzzle_data["hidden_word"] = puzzle_data["word"]
+                        feedback = "You guessed the word!"
+                    else:
+                        puzzle_data["wrong_guesses"] += 1
+                        feedback = f"'{command}' is not the word!"
+                elif len(command) == 1:
                     if command in guessed_letters:
                         if command not in repeat_warnings:
                             repeat_warnings.append(command)
-
-                            message = (
-                                f"You already guessed '{command}'. "
-                                "Try again."
-                            )
-
+                            feedback = f"You already guessed '{command.upper()}'. Try again."
                         else:
                             puzzle_data["wrong_guesses"] += 1
-
-                            message = (
-                                f"You already guessed '{command}' twice!"
-                            )
-
+                            feedback = f"You already guessed '{command.upper()}' twice!"
                     else:
                         guessed_letters.append(command)
-
                         check_word = puzzle_data["check_word"]
                         hidden_word = puzzle_data["hidden_word"]
-
                         if command in check_word:
                             new_hidden_word = ""
-
                             for index in range(len(check_word)):
                                 if check_word[index] == command:
-                                    new_hidden_word += (
-                                        puzzle_data["word"][index]
-                                    )
+                                    new_hidden_word += puzzle_data["word"][index]
                                 else:
-                                    new_hidden_word += (
-                                        hidden_word[index]
-                                    )
-
-                            puzzle_data["hidden_word"] = (
-                                new_hidden_word
-                            )
-
+                                    new_hidden_word += hidden_word[index]
+                            puzzle_data["hidden_word"] = new_hidden_word
+                            feedback = f"'{command.upper()}' is in the word!"
                         else:
                             puzzle_data["wrong_guesses"] += 1
+                            feedback = f"'{command.upper()}' is not in the word!"
+                else:
+                    feedback = "Please enter a character or guess the word."
 
-                    puzzle_data["guess"] += 1
+                puzzle_data["guess"] += 1
+                hidden_word = puzzle_data["hidden_word"]
+                wrong_guesses = puzzle_data["wrong_guesses"]
 
-                    hidden_word = puzzle_data["hidden_word"]
-                    wrong_guesses = puzzle_data[
-                        "wrong_guesses"
-                    ]
-
-                    if "-" not in hidden_word:
-                        room["solved"] = True
-                        room["locked exits"].clear()
-
-                        message = (
-                            f"{hidden_word}\n"
-                            "Winner! "
-                            f"The word was {puzzle_data['word']}."
-                        )
-
-                        command_state = None
-
-                    elif wrong_guesses >= 6:
-                        message = (
-                            f"{hidden_word}\n"
-                            "Loser! "
-                            f"The word was {puzzle_data['word']}.\n"
-                            "The puzzle remains unsolved."
-                        )
-
-                        command_state = None
-
-                    else:
-                        message = (
-                            f"\n\n{hidden_word}\n"
-                            f"Wrong guesses: {wrong_guesses}/6\n"
-                            "Enter a character:"
-                        )
+                if "-" not in hidden_word:
+                    room["solved"] = True
+                    room["locked exits"].clear()
+                    message = f"{hidden_word}\nWinner! The word was {puzzle_data['word']}."
+                    command_state = None
+                elif wrong_guesses >= 6:
+                    message = (f"{hidden_word}\nLoser! The word was {puzzle_data['word']}.\n"
+                               "The puzzle remains unsolved.")
+                    command_state = None
+                else:
+                    message = (f"{feedback}\n\n{hidden_word}\n"
+                               f"Wrong guesses: {wrong_guesses}/6\n"
+                               "Enter a character or guess the word:")
 
             # === Normal Commands ===
             elif command == "move":
@@ -674,6 +747,29 @@ def pygame_loop():
 
                 command_state = "retry"
 
+        # === Flower animation ===
+        now = pygame.time.get_ticks()
+
+        if flower_click_flash is not None and now >= flower_click_flash_until:
+            flower_click_flash = None
+
+        if command_state == "garden" and flower_flash is not None:
+            elapsed = now - flower_flash_time
+
+            if flower_flash_on and elapsed >= 500:
+                flower_flash_on = False
+                flower_flash_time = now
+
+            elif not flower_flash_on and elapsed >= 250:
+                flower_flash_index += 1
+
+                if flower_flash_index >= len(flower_flash):
+                    flower_flash = None
+                    message = "Repeat the sequence:"
+                else:
+                    flower_flash_on = True
+                    flower_flash_time = now
+
         # === Drawing ===
 
         screen.fill("black")
@@ -681,17 +777,20 @@ def pygame_loop():
         room = rooms[current_room]
 
         room_name = font.render(
-            current_room,
+            room["name"],
             True,
             "white"
         )
 
         screen.blit(room_name, (50, 30))
+        draw_minimap()
 
         # Room description
         y = 75
 
-        for line in room["description"].split("\n"):
+        text_max_width = 625
+
+        for line in wrap_text(room["description"], description_font, text_max_width):
             description_text = description_font.render(
                 line,
                 True,
@@ -721,7 +820,7 @@ def pygame_loop():
         message_y = max(y + 10, 175)
 
         if message:
-            for line in message.split("\n"):
+            for line in wrap_text(message, button_font, text_max_width):
                 message_text = button_font.render(
                     line,
                     True,
@@ -760,6 +859,41 @@ def pygame_loop():
                     text_rect
                 )
 
+        # Direction buttons only appear while Move is active.
+        if command_state == "move":
+            for direction, button in direction_buttons.items():
+                if direction in room["exits"]:
+                    pygame.draw.rect(screen, "white", button, 2)
+                    label = button_font.render(direction.capitalize(), True, "white")
+                    screen.blit(label, label.get_rect(center=button.center))
+
+        # Hopscotch squares are clickable while the puzzle is active.
+        if command_state == "hopscotch":
+            for square, button in hop_buttons.items():
+                pygame.draw.rect(screen, "white", button, 2)
+                label = button_font.render(square, True, "white")
+                screen.blit(label, label.get_rect(center=button.center))
+
+        # Simon Says flowers are clickable while the puzzle is active.
+        if command_state == "garden":
+            active_flower = None
+
+            if flower_flash is not None and flower_flash_on:
+                active_flower = flower_flash[flower_flash_index]
+            elif flower_click_flash is not None:
+                active_flower = flower_click_flash
+
+            for color, button in flower_buttons.items():
+                base_color = flower_colors[color]
+                dim_color = tuple(channel // 4 for channel in base_color)
+                fill_color = base_color if color == active_flower else dim_color
+
+                pygame.draw.rect(screen, fill_color, button)
+                pygame.draw.rect(screen, "white", button, 2)
+
+                label = button_font.render(color.capitalize(), True, "white")
+                screen.blit(label, label.get_rect(center=button.center))
+
         # Input box
         pygame.draw.rect(
             screen,
@@ -768,19 +902,32 @@ def pygame_loop():
             2
         )
 
+        keyboard_active = not (
+                command_state == "garden"
+                and flower_flash is not None
+        )
+
         input_text = description_font.render(
-            "> " + user_input,
+            "Command: " + user_input,
             True,
             "white"
         )
 
-        screen.blit(
-            input_text,
-            (
-                input_box.x + 10,
-                input_box.y + 8
+        text_x = input_box.x + 10
+        text_y = input_box.y + 9
+
+        screen.blit(input_text, (text_x, text_y))
+
+        if keyboard_active and pygame.time.get_ticks() % 1000 < 500:
+            cursor_x = text_x + input_text.get_width() + 2
+            cursor_height = 20
+            cursor_y = input_box.centery - cursor_height // 2
+
+            pygame.draw.rect(
+                screen,
+                "white",
+                (cursor_x, cursor_y, 8, cursor_height)
             )
-        )
 
         pygame.display.flip()
         clock.tick(60)

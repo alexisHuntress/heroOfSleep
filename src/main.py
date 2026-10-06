@@ -4,8 +4,28 @@ from pygame_ui import pygame_loop
 
 
 # === Game Loop ===
-def game_loop():  # TODO: Game Loop
+def game_loop():
     retry = True
+
+    print("""
+    Once upon a time, in a land of dreams and wonder, a kingdom lived in peace.
+    They slept happily and dreamed happy dreams.
+
+    Yet, there was one person whose dreams weren't so kind.
+    He dreamed of monsters and ghouls.
+
+    He grew tired of the peace of the kingdom and, using foul magic,
+    unleashed his nightmares into the land.
+
+    He took over the castle and declared that happy dreams would be no more.
+    From this moment on, the people would only dream of nightmares and monsters.
+
+    Yet all hope was not lost.
+
+    There lay an innocent child who dreamed of heroes and adventure.
+
+    This is the story of how he became one.
+    """)
 
     while retry:
         player, characters, rooms = reset_game()
@@ -61,7 +81,7 @@ def game_loop():  # TODO: Game Loop
                 if enemy_name is not None and characters[enemy_name].is_alive:
                     print(f"{characters[enemy_name].name} blocks your path! You must Attack or Run.")
                 else:
-                    print("Exits:", ", ".join(room["exits"].keys()))
+                    print("Exits:", ", ".join(direction.capitalize() for direction in room["exits"]))
                     direction = input("Which direction? ").lower().strip()
                     direction = correct_input(
                         direction,

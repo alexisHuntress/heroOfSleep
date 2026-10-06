@@ -59,7 +59,7 @@ items = {
 
     "lantern": {
         "name": "Lantern of Lulling",
-        "description": "A soft light that reveals things for what they are.",
+        "description": "Its soft light reveals things hidden in the darkness.",
         "hiddenDescription": "A soft light reveals the hidden stairs.",
         "modifier": -3,
         "stat": "ac",
@@ -71,7 +71,8 @@ items = {
     "beast": {
         "character": "artemis",
         "name": "Artemis the Mythical Beast",
-        "description": "A true friend, cute and cuddly.\n You're safe with her.",
+        "description": "A true friend, cute and cuddly.\n"
+                       "You're safe with her.",
         "modifier": None,
         "stat": None,
         "target": "target"

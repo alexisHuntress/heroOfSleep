@@ -283,7 +283,8 @@ def collect_equipment(player, room, characters):
         room["description"] = room["empty description"]
         room["item"] = None
 
-        print(f"You collected {item['name']}!")
+        print(f"You equipped {item['name']}!\n"
+              f"{item["description"]}")
     else:
         print("There is nothing to collect.")
 
