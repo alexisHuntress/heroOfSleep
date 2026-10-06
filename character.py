@@ -5,53 +5,56 @@ import random
 # Character Class
 class Character:
 
-    def __init__(self, isplayer: bool, name: str, hp: int, ac: int, damagedice: tuple, equipment: list, isalive: bool):
-        self.isplayer = isplayer
+    def __init__(self, is_player: bool, name: str, hp: int, ac: int, damage_dice: tuple, equipment: list,
+                 is_alive: bool):
+        self.is_player = is_player
         self.name = name
         self.hp = hp
+        self.max_hp = hp
         self.ac = ac
-        # is attack more accurate?
-        self.damagedice = damagedice
+        self.damage_dice = damage_dice
         self.equipment = equipment
-        self.isalive = isalive
-        self.damageModifier = 0
+        self.is_alive = is_alive
+        self.damage_modifier = 0
 
     # Hit function
     def ac_check(self, target):
-        # D20 dice
+        target_ac = target.ac
+
+        if self.is_player:
+            for item in self.equipment:
+                if item["target"] == "target" and item["stat"] == "ac":
+                    target_ac += item["modifier"]
+
         d20 = random.randint(1, 20)
 
-        if d20 >= target.ac:
-            """ Debug code need to remove or comment out so player doesnt see.
-            print(f"{self.name} rolled {d20} to hit")
-            print(f"Target's AC was {target.ac}")
-             end debug code """
+        if d20 >= target_ac:
             return True
         else:
             return False
 
     # Attack function
     def attack(self, target):
-        if self.isalive:
+        if self.is_alive:
             if self.ac_check(target):
 
                 # Check how many dice to roll
-                numberOfDice = self.damagedice[0]
-                sizeOfDice = self.damagedice[1]
+                number_of_dice = self.damage_dice[0]
+                size_of_dice = self.damage_dice[1]
 
-                diceOutput = []
+                dice_output = []
 
                 # Roll all damage dice
-                for i in range(numberOfDice):
-                    diceOutput.append(random.randint(1, sizeOfDice))
+                for i in range(number_of_dice):
+                    dice_output.append(random.randint(1, size_of_dice))
 
                 # Add all dice together, then apply modifier
-                damage = sum(diceOutput) + self.damageModifier
+                damage = sum(dice_output) + self.damage_modifier
                 print(
                     f"{self.name} attacked {target.name}!\n"
                     f"{self.name} dealt {damage} damage to {target.name}!"
                 )
-                target.takeDamage(damage)
+                target.take_damage(damage)
                 return damage
             else:
                 print(f"{self.name} attacked {target.name}")
@@ -62,8 +65,8 @@ class Character:
     def take_damage(self, damage):
         self.hp -= damage
         if self.hp <= 0:
-            self.isalive = False
-            if self.isplayer:
+            self.is_alive = False
+            if self.is_player:
                 print(
                     "Oh No!\n"
                     "You have been defeated!\n"
@@ -72,7 +75,7 @@ class Character:
             else:
                 print(f"You have defeated {self.name}.")
         else:
-            if self.isplayer:
+            if self.is_player:
                 print(f"You have {self.hp} HP left.")
             else:
                 print(f"{self.name} has {self.hp} HP left.")
@@ -88,17 +91,13 @@ class Character:
             target.ac += item["modifier"]
 
         elif item["stat"] == "damage":
-            target.damageModifier += item["modifier"]
+            target.damage_modifier += item["modifier"]
 
-    # "Equip" items
-    def apply_equipment(self):
-        modified = []
-
-        for item in self.equipment:
-            if item not in modified:
-                self.modify_stats(item)
-                modified.append(item)
-
-        print(self.ac)
-        print(", ".join(item["name"] for item in modified))
-
+    # Display equipment
+    def display_equipment(self):
+        if self.equipment:
+            print("Equipment:")
+            for item in self.equipment:
+                print(f"- {item['name']}")
+        else:
+            print("You have no equipment.")

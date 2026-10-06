@@ -9,14 +9,6 @@
 """
 
 items = {
-    "Mom": {
-        "name": "Mom",
-        "description": "The protector of heroes.\n Sleep well young Hero.\n Mom's here now.",
-        "modifier": None,
-        "stat": None,
-        "target": None
-    },
-
     "socks": {
         "name": "Socks of Serenity",
         "description": "Soft socks that bring you peace.",
@@ -28,8 +20,8 @@ items = {
     "leggings": {
         "name": "Leggings of Recovery",
         "description": "Soft bear leggings that keep you warm.",
-        "modifier": 1,
-        "stat": "ac",
+        "modifier": 5,
+        "stat": "recovery",
         "target": "self"
     },
 
@@ -67,7 +59,7 @@ items = {
 
     "lantern": {
         "name": "Lantern of Lulling",
-        "description": "A soft light that reveals things for what they are.",
+        "description": "Its soft light reveals things hidden in the darkness.",
         "hiddenDescription": "A soft light reveals the hidden stairs.",
         "modifier": -3,
         "stat": "ac",
@@ -77,9 +69,10 @@ items = {
     },
 
     "beast": {
-        "character": "beast",
+        "character": "artemis",
         "name": "Artemis the Mythical Beast",
-        "description": "A true friend, cute and cuddly.\n You're safe with her.",
+        "description": "A true friend, cute and cuddly.\n"
+                       "You're safe with her.",
         "modifier": None,
         "stat": None,
         "target": "target"
