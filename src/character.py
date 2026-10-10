@@ -95,9 +95,25 @@ class Character:
 
     # Display equipment
     def display_equipment(self):
-        if self.equipment:
-            print("Equipment:")
-            for item in self.equipment:
-                print(f"- {item['name']}")
-        else:
+        if not self.equipment:
             print("You have no equipment.")
+            return
+
+        print("\n=== Equipment ===")
+
+        for item in self.equipment:
+            print(f"\n{item['name']}")
+            print(f"  {item['description']}")
+
+            if item["modifier"] is not None:
+                stat = item["stat"].upper()
+                modifier = item["modifier"]
+                target = item["target"]
+
+                if target == "self":
+                    print(f"  Effect: {stat} {modifier:+}")
+                else:
+                    print(f"  Enemy effect: {stat} {modifier:+}")
+
+            elif item.get("character"):
+                print("  Effect: Companion joins you in combat.")

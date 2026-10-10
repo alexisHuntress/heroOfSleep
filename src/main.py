@@ -1,5 +1,7 @@
 # === Imports ===
+from utils import direction_shortcuts
 from game import *
+
 from pygame_ui import pygame_loop
 
 
@@ -26,6 +28,23 @@ def game_loop():
 
     This is the story of how he became one.
     """)
+    print(
+        "\nWelcome, Hero!\n"
+        "\n"
+        "Your goal is to explore the dungeon, collect equipment,\n"
+        "and defeat the Nightmare to save the kingdom of dreams.\n"
+        "\n"
+        "HOW TO PLAY:\n"
+        "Type MOVE to choose a direction and explore the castle.\n"
+        "Use COLLECT to pick up equipment you discover.\n"
+        "Use ATTACK to fight enemies or RUN to escape.\n"
+        "Use PUZZLE to solve challenges blocking your path.\n"
+        "Use EQUIPMENT to review the items you've collected.\n"
+        "\n"
+        "Type HELP at any time to review the available commands.\n"
+        "\n"
+        "Your adventure begins now!\n"
+    )
 
     while retry:
         player, characters, rooms = reset_game()
@@ -51,6 +70,27 @@ def game_loop():
 
             game_commands()
             command = input("> ").lower().strip()
+
+            direction = None
+            parts = command.replace(":", " ").split()
+
+            item_name = None
+
+            if command.startswith("collect "):
+                item_name = command.removeprefix("collect ").strip()
+                command = "collect"
+
+            if len(parts) == 2 and parts[0] in ["move", "go"]:
+                direction = direction_shortcuts.get(parts[1], parts[1])
+                command = "move"
+
+            elif len(parts) == 1 and parts[0] in direction_shortcuts:
+                direction = direction_shortcuts[parts[0]]
+                command = "move"
+
+            elif command == "go":
+                command = "move"
+
             command = correct_input(
                 command,
                 [
@@ -61,6 +101,7 @@ def game_loop():
                     "play",
                     "run",
                     "equipment",
+                    "examine",
                     "help",
                     "quit"
                 ]
@@ -70,23 +111,22 @@ def game_loop():
                 running = False
 
             elif command == "collect":
-                collect_equipment(player, room, characters)
+                collect_equipment(player, room, characters, item_name)
 
             elif command == "equipment":
                 player.display_equipment()
 
             elif command == "move":
                 enemy_name = room["enemy"]
-
                 if enemy_name is not None and characters[enemy_name].is_alive:
                     print(f"{characters[enemy_name].name} blocks your path! You must Attack or Run.")
+
                 else:
                     print("Exits:", ", ".join(direction.capitalize() for direction in room["exits"]))
-                    direction = input("Which direction? ").lower().strip()
-                    direction = correct_input(
-                        direction,
-                        ["north", "south", "east", "west", "up", "down"]
-                    )
+                    if direction is None:
+                        direction = input("Which direction? ").lower().strip()
+                        direction = direction_shortcuts.get(direction, direction)
+                    direction = correct_input(direction, ["north", "south", "east", "west", "up", "down"])
 
                     if direction in ["north", "south", "east", "west", "up", "down"]:
                         new_room, description = try_moving(current_room, rooms, direction)
@@ -104,7 +144,6 @@ def game_loop():
                                 "Sweet dreams, Hero."
                             )
                             running = False
-
                     else:
                         print("That is not a valid direction.")
 
@@ -160,6 +199,25 @@ def game_loop():
                     else:
                         print("The puzzle remains unsolved.")
 
+            elif command in ["examine"]:
+                print(f"\n{room['name']}")
+                print(room["description"])
+
+                if room["item"] is not None:
+                    print(f"There is something you can collect here: {room["item"]["name"]}.")
+
+                if room["enemy"] is not None:
+                    enemy = characters[room["enemy"]]
+
+                    if enemy.is_alive:
+                        print(f"A {enemy.name} is here!")
+                        print(f"HP: {enemy.hp}/{enemy.max_hp}")
+
+                if room["puzzle"] is not None and not room["solved"]:
+                    print("There is an unsolved puzzle in this room.")
+
+                print("Exits:", ", ".join(room["exits"]))
+
             elif command == "help":
                 help_menu()
 
@@ -182,5 +240,5 @@ def game_loop():
 
 
 if __name__ == "__main__":
-    # game_loop()
-    pygame_loop()
+    game_loop()
+    # pygame_loop()

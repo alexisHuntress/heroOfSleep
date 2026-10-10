@@ -2,6 +2,15 @@
 escape_chance = 65
 hangman_guesses = 7
 
+direction_shortcuts = {
+    "n": "north",
+    "s": "south",
+    "e": "east",
+    "w": "west",
+    "u": "up",
+    "d": "down"
+}
+
 # === Character Values ===
 characters = {
     "player": {

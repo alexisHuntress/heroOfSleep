@@ -42,27 +42,31 @@ def garden_puzzle():
 
 
 def hop_scotch_puzzle():
-    """This function takes a user input and compares it
-     against a list of lists to "move" across a hopscotch court."""
+    """Compare player jumps against the hopscotch path."""
     path = [["1"], {"2", "3"}, ["4"], {"5", "6"}, ["7"]]
+    current_square = "Start"
 
     # Output the court and take user input.
     for square in path:
         print("""Jump across the court!
 
-                 [ 7 ]
-              ( 5 ) ( 6 )
-                 [ 4 ]
-              ( 3 ) ( 2 )
-                 [ 1 ]
-            """)
-        print(f"Which square do you jump on?")
+                [ 7 ]
+             ( 5 ) ( 6 )
+                [ 4 ]
+             ( 3 ) ( 2 )
+                [ 1 ]
+              [ START ]
+        """)
+
+        print(f"You're on {current_square}. Where do you jump?")
         jump = input("Jump: ").replace(",", " ").split()
 
-        # Compare inputs
-        if jump != square:
+        # Compare inputs.
+        if len(jump) != len(square) or set(jump) != set(square):
             print("You jumped on the wrong square.")
             return False
+
+        current_square = " and ".join(sorted(square))
 
     print("You completed the hopscotch path. The door unlocks.")
     return True
@@ -91,14 +95,28 @@ def hangman_puzzle():
     wrong_guesses = 0
     guess = 1
 
-    print(f"A secret word begins to form on the door.\n"
-          f"You can see how long the word is but the letters are blurry.\n"
-          f"Guess one letter at a time, or try to guess the whole word.\n"
-          f"You have {hangman_guesses} wrong attempts to guess the word.")
+    print(f"""
+    +--------------------------------------------------+
+    |                  HANGMAN PUZZLE                  |
+    +--------------------------------------------------+
+    | Strange symbols cover the locked door.           |
+    | A hidden word begins to appear!                  |
+    |                                                  |
+    | HOW TO PLAY:                                     |
+    | - Guess one letter at a time.                    |
+    | - Correct letters reveal part of the word.       |
+    | - Incorrect guesses count against you.           |
+    | - You can also guess the entire word.            |
+    | - Solve the word to unlock the door.             |
+    |                                                  |
+    | You have {max_wrong_guesses} incorrect guesses.  |
+    +--------------------------------------------------+
+    """)
 
     while wrong_guesses < max_wrong_guesses and "-" in hidden_word:
 
-        print(hidden_word)
+        print(f"\nWord: {hidden_word}")
+        print(f"Guessed letters: {', '.join(guessed_letters).upper() or 'None'}")
         print(f"Wrong guesses: {wrong_guesses}/{max_wrong_guesses}")
 
         user_input = input(
@@ -132,7 +150,6 @@ def hangman_puzzle():
 
             else:
                 guessed_letters.append(user_input)
-                print(f"You have guessed {', '.join(guessed_letters).upper()}")
 
                 # Count how many times the letter appears
                 num_occurrences = check_word.count(user_input)
@@ -164,6 +181,11 @@ def hangman_puzzle():
         guess += 1
 
     print(hidden_word)
+
+    if hidden_word.lower() == check_word:
+        return True
+
+    return False
 
 
 # === Map ===

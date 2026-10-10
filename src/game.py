@@ -262,7 +262,7 @@ def run_from_combat(player, room, characters):
 
 # === Equipment ===  # TODO: Equipment
 
-def collect_equipment(player, room, characters):
+def collect_equipment(player, room, characters, item_name=None):
     enemy_name = room["enemy"]
 
     if enemy_name is not None:
@@ -275,6 +275,11 @@ def collect_equipment(player, room, characters):
     if room["item"]:
         item = room["item"]
 
+        # Validate a specific item request.
+        if item_name and item_name not in item["name"].lower():
+            print(f"There is no '{item_name}' to collect here.")
+            return
+
         player.equipment.append(item)
 
         if item["target"] == "self" and item["stat"] != "recovery":
@@ -283,8 +288,8 @@ def collect_equipment(player, room, characters):
         room["description"] = room["empty description"]
         room["item"] = None
 
-        print(f"You equipped {item['name']}!\n"
-              f"{item["description"]}")
+        print(f"You equipped the {item['name']}!\n"
+              f"{item['description']}")
     else:
         print("There is nothing to collect.")
 
@@ -293,8 +298,8 @@ def collect_equipment(player, room, characters):
 
 def game_commands():
     print(
-        "Commands: [Move] [Attack] [Collect] [Puzzle] [Run] "
-        "[Equipment] [Help] [Quit]"
+        "Commands: [Move] [Attack] [Collect] [Puzzle/Play] [Run] "
+        "[Equipment] [Examine] [Help] [Quit]"
     )
 
 
@@ -324,5 +329,6 @@ def help_menu():
         "Puzzle    - Attempt to solve a puzzle\n"
         "Run       - Attempt to escape from an enemy\n"
         "Equipment - View your collected equipment\n"
+        "Examine   - Inspect your current room and its contents.\n"
         "Quit      - End the game"
     )

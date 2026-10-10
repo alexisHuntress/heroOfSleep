@@ -59,7 +59,8 @@ items = {
 
     "lantern": {
         "name": "Lantern of Lulling",
-        "description": "Its soft light reveals things hidden in the darkness.",
+        "description": "Its soft light reveals things hidden in the darkness.\n"
+                       "You feel something opening in the distance...",
         "hiddenDescription": "A soft light reveals the hidden stairs.",
         "modifier": -3,
         "stat": "ac",
